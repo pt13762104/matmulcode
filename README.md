@@ -15,6 +15,9 @@ Each 96x96 block of B is represented as a 48x12 matrix, each element is an 2x8 (
 
 Each 96x96 block of C is represented as a 48x48 matrix, each element is an 2x2 matrix.
 
+### Performance
+![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf.png)
+
 ## fp32_32x32.cpp
 
 This does fp32xfp32->fp32 multiplication. Outputs to stdout the performance for matrix sizes $4096\times4096$, including the conversion step. Currently only supports matrix sizes of $2^k\times32$ for now...
@@ -29,6 +32,4 @@ The 32x32 blocks of A, B, C were kept in original order (row-major assumed).
 
 The conversion step is as follows:
 
-Assume a matrix $M$ of size $N$. Recursively convert the 4 quadrants of size $N/2\timesN/2$ and write them in order to the converted array. When $N$ is the tile size above, the format is defined as above.
-
-
+Assume a matrix $M$ of size $N$. Recursively convert the 4 quadrants of size $N/2\times N/2$ and write them in order to the converted array. When $N$ is the tile size above, the format is defined as above.
