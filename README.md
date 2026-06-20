@@ -18,6 +18,13 @@ Each 96x96 block of C is represented as a 48x48 matrix, each element is an 2x2 m
 ### Performance
 ![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf.png)
 
+## int8_128x128.cpp
+
+Does the same thing as int8_96x96 but with the kernel size being 128x128. An experiment to see if C could be outside L1 or not (A and B shouldn't), and it's a success.
+
+### Performance
+![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_128x128.png)
+
 ## fp32_32x32.cpp
 
 This does fp32xfp32->fp32 multiplication. Outputs to stdout the performance for matrix sizes $4096\times4096$, including the conversion step. Currently only supports matrix sizes of $2^k\times32$ for now...
