@@ -25,6 +25,18 @@ Does the same thing as int8_96x96 but with the kernel size being 128x128. An exp
 ### Performance
 ![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_128x128.png)
 
+## int8_general.cpp
+Replacement for int8_96x96 and int8_128x128. Now, the base size could be anything that's divisible by 64. This was inspired from q8_0_4x4 where it shows that fitting in L1 isn't the best strategy. This interleave 4 row-blocks (of size 2) to make sure the A- and B- tiles were always loaded sequentially.
+
+### Performance
+![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_int8.png)
+
+## q8_0_4x4.cpp
+Re-implementation of the q8_0_4x4 format of llama.cpp. Performance is equal to llama.cpp at size 4096 and above, but is better at lower matrix sizes. There's no repacking code at the moment.
+
+### Performance
+![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_q8_0_4_4.png)
+
 ## fp32_32x32.cpp
 
 This does fp32xfp32->fp32 multiplication. Outputs to stdout the performance for matrix sizes $4096\times4096$, including the conversion step. Currently only supports matrix sizes of $2^k\times32$ for now...
