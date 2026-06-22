@@ -26,7 +26,9 @@ Does the same thing as int8_96x96 but with the kernel size being 128x128. An exp
 ![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_128x128.png)
 
 ## int8_general.cpp
-Replacement for int8_96x96 and int8_128x128. Now, the base size could be anything that's divisible by 64. This was inspired from q8_0_4x4 where it shows that fitting in L1 isn't the best strategy. This interleave 4 row-blocks (of size 2) to make sure the A- and B- tiles were always loaded sequentially.
+Replacement for int8_96x96 and int8_128x128. Now, the base size could be anything that's divisible by 64. This was inspired from q8_0_4x4 where it shows that fitting in L1 isn't the best strategy. 
+
+This interleave 4 row-blocks (of size 2) to make sure the A- and B- tiles were always loaded sequentially. Every iteration of the j-loop, the program does 16 `smmla`s to do a full 8x8x8 matrix multiplication.
 
 ### Performance
 ![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_int8.png)
