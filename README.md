@@ -34,9 +34,12 @@ This interleave 4 row-blocks (of size 2) to make sure the A- and B- tiles were a
 ![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_int8.png)
 
 ## q8_0_4x4.cpp
-Re-implementation of the q8_0_4x4 format of llama.cpp. Performance is equal to llama.cpp at size 4096 and above, but is better at lower matrix sizes. There's no repacking code at the moment.
+Re-implementation of the q8_0_4x4 format of llama.cpp. There's no repacking code at the moment.
 
 ### Performance
+
+I can't explain the drop in performance for N from 512 to 2048, probably due to some cache associativity reasons? llama.cpp is with NxNxN multiplication through test-backend-ops, and the curve looks reasonable.
+ 
 ![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_q8_0_4_4.png)
 
 ## fp32_32x32.cpp
