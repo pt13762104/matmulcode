@@ -13,12 +13,7 @@ using namespace std;
 void init()
 {
 }
-// 128 x 128 Q8_0 x Q8_0 -> I32
-// A has dimensions 128 x 128
-// B has dimensions 128 x 128
-// sA has dimensions 128 x 4 -> 32x16
-// sB has dimensions 128 x 4 -> 32x16
-// C has dimensions 128 x 128
+// N x N Q8_0 x Q8_0 -> F32
 template <int N> void matmulX(int8_t *A, int8_t *B, float16_t *sA, float16_t *sB, float *C)
 {
     A = (int8_t *)__builtin_assume_aligned(A, 16);
@@ -29,18 +24,16 @@ template <int N> void matmulX(int8_t *A, int8_t *B, float16_t *sA, float16_t *sB
     for (int i = 0; i < N; i += 4)
         for (int k = 0; k < N; k += 4)
         {
-            // C^T? bandwidth demands might be high. C is in L2 though.
             auto Cr0 = svld1_f32(svptrue_b32(), C + i * N + k);
             auto Cr1 = svld1_f32(svptrue_b32(), C + (i + 1) * N + k);
             auto Cr2 = svld1_f32(svptrue_b32(), C + (i + 2) * N + k);
             auto Cr3 = svld1_f32(svptrue_b32(), C + (i + 3) * N + k);
-            // loadmaxx A, B, and scales
-            // 32 is, in fact, QK8_0
             for (int jj = 0; jj < N; jj += 64)
             {
                 // load scales assume permuted in [0, 4, 1, 5, 2, 6, 3, 7]
-                auto scalesA = svld1_f16(svptrue_b16(), sA + (i / 4) * N / 8 + (jj / 64) * 8);
-                auto scalesB = svld1_f16(svptrue_b16(), sA + (k / 4) * N / 8 + (jj / 64) * 8);
+                auto scalesA = svld1_f16(svptrue_b16(), sA + i * N / 32 + jj / 8);
+                auto scalesB = svld1_f16(svptrue_b16(), sB + k * N / 32 + jj / 8);
+                // 32 is QK8_0
                 for (int j = jj; j < jj + 64; j += 32)
                 {
                     // Ct = 0
@@ -48,7 +41,7 @@ template <int N> void matmulX(int8_t *A, int8_t *B, float16_t *sA, float16_t *sB
                     auto Ct1 = svdup_n_s32(0);
                     auto Ct2 = svdup_n_s32(0);
                     auto Ct3 = svdup_n_s32(0);
-                    // loadmaxx A, B
+                    // load A, B
                     auto ai0 = svld1_s8(svptrue_b8(), A + i * N + j * 4);
                     auto ai1 = svld1_s8(svptrue_b8(), A + i * N + j * 4 + 16);
                     auto ai2 = svld1_s8(svptrue_b8(), A + i * N + j * 4 + 32);
