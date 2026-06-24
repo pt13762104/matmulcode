@@ -33,6 +33,18 @@ This interleave 4 row-blocks (of size 2) to make sure the A- and B- tiles were a
 ### Performance
 ![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_int8.png)
 
+An extra optimization can be done by doing cache blocking over $i$ and $k$, as follows:
+
+```c++
+for (int is = 0; is < N; is += SX)
+    for (int ks = 0; ks < N; ks += SY)
+        for (int i = is; i < is + SX; i += 8)
+            for (int k = ks; k < ks + SY; k += 8)
+```
+
+![](https://raw.githubusercontent.com/pt13762104/matmulcode/refs/heads/main/perf_int8_block.png)
+
+As you can see this reaches 96.6% of peak i8mm on A710 when N = 1024 (396/410 GOPS).
 ## q8_0_4x4.cpp
 Re-implementation of the q8_0_4x4 format of llama.cpp. There's no repacking code at the moment.
 
