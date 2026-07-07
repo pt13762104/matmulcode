@@ -63,6 +63,14 @@ The kernel is 32x32 with 2x4 tiling (broadcasting two values of A and load 4 B v
 
 The 32x32 blocks of A, B, C were kept in original order (row-major assumed).
 
+## fp64.cpp
+
+https://dmoj.ca/problem/matrixmultiplication
+
+Some design choices comes from [libxsmm](https://github.com/libxsmm/libxsmm): load to ymm3 (`bi`), 3x16 tiling, etc. This was the result after I consulted libxsmm's generated code.
+
+It does pretty well, ~56 GFLOPS on a 3.8 GHz 3600X (256x256x256) (without the transposition step). $2^{10}$ iterations took only ~680ms.
+
 ## Conversion step
 
 The conversion step is as follows:
