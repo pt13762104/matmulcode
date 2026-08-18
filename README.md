@@ -73,12 +73,12 @@ It does pretty well, ~56 GFLOPS on a 3.8 GHz 3600X (256x256x256) (without the tr
 
 ## test_vnni.cpp
 
-This is an example test of VNNI for int8 calculations. The matrix size is 24576x24576 and OpenMP is used, giving each thread a 4096x24576 multiplication.
+This is an example test of VNNI for int8 calculations. The matrix size is 24576x24576 and OpenMP is used (6 threads), giving each thread a 4096x24576 multiplication.
 
 It uses two layers of unrolling (64->512 and 512->4096) to eliminate recursion overhead (probably not needed...)
 
 GCC does poorly with this code. Clang is required for maximum performance.
-
+Results (on i5-11400, ST 4.4 GHz, MT 4.2 GHz):
 | N                     | GOPS | Efficiency % |
 |-----------------------|------|--------------|
 | 64                    | 558  | 99           |
