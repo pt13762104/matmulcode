@@ -78,7 +78,9 @@ This is an example test of VNNI for int8 calculations. The matrix size is 24576x
 It uses two layers of unrolling (64->512 and 512->4096) to eliminate recursion overhead (probably not needed...)
 
 GCC does poorly with this code. Clang is required for maximum performance.
+
 Results (on i5-11400, ST 4.4 GHz, MT 4.2 GHz):
+
 | N                     | GOPS | Efficiency % |
 |-----------------------|------|--------------|
 | 64                    | 558  | 99           |
