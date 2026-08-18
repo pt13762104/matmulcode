@@ -71,6 +71,22 @@ Some design choices comes from [libxsmm](https://github.com/libxsmm/libxsmm): lo
 
 It does pretty well, ~56 GFLOPS on a 3.8 GHz 3600X (256x256x256) (without the transposition step). $2^{10}$ iterations took only ~680ms.
 
+## test_vnni.cpp
+
+This is an example test of VNNI for int8 calculations. The matrix size is 24576x24576 and OpenMP is used, giving each thread a 4096x24576 multiplication.
+
+It uses two layers of unrolling (64->512 and 512->4096) to eliminate recursion overhead (probably not needed...)
+
+GCC does poorly with this code. Clang is required for maximum performance.
+
+| N                     | GOPS | Efficiency % |
+|-----------------------|------|--------------|
+| 64                    | 558  | 99           |
+| 128                   | 527  | 94           |
+| 512 (recursive order) | 547  | 97           |
+| 4K (recursive order)  | 497  | 88           |
+| 24K (OpenMP)          | 2748 | 85           |
+
 ## Conversion step
 
 The conversion step is as follows:
